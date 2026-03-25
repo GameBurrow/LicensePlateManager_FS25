@@ -93,7 +93,21 @@ local function onOpen(self)
 		end
 	end
 
-	if not self.tpsInitialized then 
+	-- Sort the the license plates alphaphetically.
+	local indices = {}
+	for i = 1, #self.target.sortedPlates do indices[i] = i end
+	table.sort(indices, function(a, b)
+		return self.target.sortedPlates[a] < self.target.sortedPlates[b]
+	end)
+	local newSortedPlates, newSortedVehicles = {}, {}
+	for _, i in ipairs(indices) do
+		table.insert(newSortedPlates, self.target.sortedPlates[i])
+		table.insert(newSortedVehicles, self.target.sortedVehicles[i])
+	end
+	self.target.sortedPlates = newSortedPlates
+	self.target.sortedVehicles = newSortedVehicles
+
+	if not self.tpsInitialized then
 		--- Functions needed for the smooth list.
 		self.target.getNumberOfItemsInSection =  function (self, list, section)
 			return #self.sortedPlates or #self.target.sortedPlates
